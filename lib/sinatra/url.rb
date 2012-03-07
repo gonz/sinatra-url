@@ -41,9 +41,9 @@ module Sinatra
         @keys
       end
 
-      def call(params)
+      def call(params, script_name = '')
         params[:splat] = Array(params[:splat])
-        url = @path.dup
+        url = "#{script_name}#{@path}"
 
         keys.each do |key|
           match = key == "splat" ? "*" : ":#{key}"
@@ -107,7 +107,7 @@ module Sinatra
     module Helpers
       def url_for(name, params={})
         route = Mapper.default[name] or raise ArgumentError, "Unregistered path for '#{name}'"
-        route.call(params)
+        route.call(params, request.script_name)
       end
     end
   end
